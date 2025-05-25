@@ -11,7 +11,7 @@
       <input type="email" placeholder="Email..." v-model="form.email">
       <label>password</label>
       <input type="password" placeholder="password..." v-model="form.password">
-      <button @click="checkLogin">Submit</button>
+      <button @click="HandleLogin">Submit</button>
     </form>
   </div>
 </template>
@@ -53,27 +53,7 @@ const fetchData = async () => {
 
 }
 
-const handleSubmit = async () => {
-  try {
-    const response = await axios.post(url, form);
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-}
 
-const checkLogin = () => {
-  if (state.users.length > 0) {
-    const user = state.users.find(user => user.email === form.email && user.password === form.password);
-    if (user) {
-      window.location.href = '/home';
-    } else {
-      alert('Invalid email or password');
-    }
-  } else {
-    alert('No users found. Please register first.');
-  }
-}
 
 </script>
 <style>
