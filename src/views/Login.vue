@@ -1,81 +1,69 @@
 <template>
   <div>
-    <!-- <div class="start">
-    </div> -->
     <h1>Login Page</h1>
-    <form>
+    <form @submit.prevent="checkLogin">
       <h2>Login</h2>
       <label>Name</label>
-      <input type="text" placeholder="Name" v-model="form.name">
+      <input type="text" placeholder="Name" v-model="form.name" />
       <label>Email</label>
-      <input type="email" placeholder="Email..." v-model="form.email">
-      <label>password</label>
-      <input type="password" placeholder="password..." v-model="form.password">
-      <button @click="checkLogin">Submit</button>
+      <input type="email" placeholder="Email..." v-model="form.email" />
+      <label>Password</label>
+      <input type="password" placeholder="Password..." v-model="form.password" />
+      <button type="submit">Submit</button>
     </form>
   </div>
 </template>
 
+
 <script lang="ts" setup>
 import axios from 'axios';
-import { reactive, Reactive } from 'vue';
+import { reactive, onMounted } from 'vue';
 
 const form = reactive({
   name: '',
   email: '',
   password: '',
-})
+});
 
 interface User {
   name: string;
   email: string;
   password: string;
 }
-const state = reactive<{users: User[]}>(
-  {
-    users: []
-  }
-)
 
-const url = 'https://683306cfc3f2222a8cb4b199.mockapi.io/api/form/users'
+const state = reactive<{ users: User[] }>({
+  users: [],
+});
+
+const url = 'https://683306cfc3f2222a8cb4b199.mockapi.io/api/form/users';
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(url)
+    const response = await axios.get(url);
     state.users = response.data;
-    console.log(response.data);
-    
-  }
-  catch (error){
-    console.error(error);
-    
-  }
-
-}
-
-const handleSubmit = async () => {
-  try {
-    const response = await axios.post(url, form);
-    console.log(response.data);
+    console.log('Fetched users:', state.users);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching users:', error);
   }
-}
+};
 
 const checkLogin = () => {
-  if (state.users.length > 0) {
-    const user = state.users.find(user => user.email === form.email && user.password === form.password);
-    if (user) {
-      window.location.href = '/home';
-    } else {
-      alert('Invalid email or password');
-    }
+  const user = state.users.find(
+    (user) =>
+      user.name === form.name &&
+      user.email === form.email &&
+      user.password === form.password
+  );
+  if (user) {
+    window.location.href = '/home';
   } else {
-    alert('No users found. Please register first.');
+    alert('Invalid name, email, or password');
   }
-}
+};
 
+onMounted(fetchData);
 </script>
+
 <style>
 form {
   display: flex;
