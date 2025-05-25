@@ -1,6 +1,8 @@
 <template>
   <div>
     <h1>Login Page</h1>
+    <router-link to="/register">Register</router-link>
+
     <form @submit.prevent="checkLogin">
       <h2>Login</h2>
       <label>Name</label>
@@ -10,6 +12,8 @@
       <label>Password</label>
       <input type="password" placeholder="Password..." v-model="form.password" />
       <button type="submit">Submit</button>
+      <router-link to="/register">Register</router-link>
+
     </form>
   </div>
 </template>
@@ -48,18 +52,31 @@ const fetchData = async () => {
 };
 
 const checkLogin = () => {
+  // Check if form inputs are filled
+  if (!form.name || !form.email || !form.password) {
+    alert('Please fill in all fields.');
+    return;
+  }
+
+  // Check if user exists in the API data
   const user = state.users.find(
     (user) =>
       user.name === form.name &&
       user.email === form.email &&
       user.password === form.password
   );
+
   if (user) {
+    // Store authentication state
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('user', JSON.stringify(user));
     window.location.href = '/home';
   } else {
     alert('Invalid name, email, or password');
   }
 };
+
+
 
 onMounted(fetchData);
 </script>
